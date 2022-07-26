@@ -1,16 +1,32 @@
 <script>
+
+	import localforage from 'localforage';
 	import Header from '$lib/header/Header.svelte';
+	import { onMount } from 'svelte';
+	import { initializeMockData } from '../lib/data/mockData';
 	import '../app.css';
+	
+	let ready = false;
+
+	const initialize = async () => {
+		const initialized = await localforage.getItem('initialized');
+		if(!initialized) await initializeMockData();
+		
+		ready = true;
+	};
+
+	onMount(initialize);
 </script>
 
 <Header />
 
 <main>
-	<slot />
+	{#if ready}
+		<slot />
+	{/if}
 </main>
 
 <footer>
-	<p>visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to learn SvelteKit</p>
 </footer>
 
 <style>
@@ -20,7 +36,8 @@
 		flex-direction: column;
 		padding: 1rem;
 		width: 100%;
-		max-width: 1024px;
+		max-width: calc(100% - 40px);
+		max-width: 960px;
 		margin: 0 auto;
 		box-sizing: border-box;
 	}
@@ -31,10 +48,6 @@
 		justify-content: center;
 		align-items: center;
 		padding: 40px;
-	}
-
-	footer a {
-		font-weight: bold;
 	}
 
 	@media (min-width: 480px) {

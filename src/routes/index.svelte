@@ -3,31 +3,40 @@
 </script>
 
 <script>
-	import Counter from '$lib/Counter.svelte';
+	import { DEFAULT_USER } from "$lib/data";
+	import Dropdown from "$lib/inputs/Dropdown.svelte";
+	import { localForageStore } from "../stores";
+	
+	const users = localForageStore('users');
+	let currentUser = localForageStore('currentUser');
+	let userNames = [];
+	let path = '/teams';
+
+	$: userNames = ($users.list || []).map(u => u.name);
+	$: console.log(path);	
+
+	const setUser = (nextUser) => {
+		// Update user
+		const [user] = $users.list.filter(u => u.name === nextUser);
+		currentUser.set(user);
+
+		// If the use is member of only one team, send them there.
+		path = user.teams.length === 1 ? `/${user.teams[0]}` : '/teams';
+	};
 </script>
 
 <svelte:head>
-	<title>Home</title>
-	<meta name="description" content="Svelte demo app" />
+	<title>Change User</title>
+	<meta name="description" content="Sign in" />
 </svelte:head>
 
 <section>
-	<h1>
-		<span class="welcome">
-			<picture>
-				<source srcset="svelte-welcome.webp" type="image/webp" />
-				<img src="svelte-welcome.png" alt="Welcome" />
-			</picture>
-		</span>
+	<h1> Change User </h1>
 
-		to your new<br />SvelteKit app
-	</h1>
-
-	<h2>
-		try editing <strong>src/routes/index.svelte</strong>
-	</h2>
-
-	<Counter />
+	<div class="card">
+		<Dropdown bind:value={$currentUser.name} options={userNames} onchange={setUser}/>
+		<a sveltekit:prefetch href={path}>Go!</a>
+	</div>
 </section>
 
 <style>
@@ -43,19 +52,11 @@
 		width: 100%;
 	}
 
-	.welcome {
-		display: block;
-		position: relative;
-		width: 100%;
-		height: 0;
-		padding: 0 0 calc(100% * 495 / 2048) 0;
-	}
-
-	.welcome img {
-		position: absolute;
-		width: 100%;
-		height: 100%;
-		top: 0;
-		display: block;
+	.card {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		padding-bottom: 20px;
 	}
 </style>

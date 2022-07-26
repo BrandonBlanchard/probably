@@ -8,7 +8,8 @@
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync",
 		"check": "svelte-check --tsconfig ./jsconfig.json",
-		"check:watch": "svelte-check --tsconfig ./jsconfig.json --watch"
+		"check:watch": "svelte-check --tsconfig ./jsconfig.json --watch",
+		"start": "npm run start -- --open"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "next",
@@ -22,6 +23,8 @@
 	"type": "module",
 	"dependencies": {
 		"@fontsource/fira-mono": "^4.5.0",
-		"cookie": "^0.4.1"
+		"cookie": "^0.4.1",
+		"localforage": "^1.10.0",
+		"uuid": "^8.3.2"
 	}
 }
